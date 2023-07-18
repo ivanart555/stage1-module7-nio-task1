@@ -8,23 +8,23 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class FileReader {
     Logger logger = LoggerFactory.getLogger("com.epam.mjc.nio.FileReader");
 
     public Profile getDataFromFile(File file) {
-        List<String> content = new ArrayList<>();
 
-        Path path = file.toPath();
+        List<String> content = new ArrayList<>();
         Charset charset = StandardCharsets.UTF_8;
 
-        try {
-            content = Files.readAllLines(path, charset);
+        try (Stream<String> stream = Files.lines(file.toPath(), charset)) {
+            content = stream.collect(Collectors.toList());
         } catch (IOException e) {
             logger.warn("Something went wrong with IO!");
         }
